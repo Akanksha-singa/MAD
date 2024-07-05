@@ -1,0 +1,32 @@
+name: password
+description: A new Flutter project.
+version: 1.0.0+1
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies: 
+  flutter: 
+    sdk: flutter
+  flutter_localizations: 
+    sdk: flutter
+  cached_network_image: ^3.3.0
+  flutter_svg: ^2.0.9
+  google_fonts: ^4.0.0
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  uses-material-design: true
+  assets: 
+    - assets/
+    - assets/images/
+    - assets/images/img_group_7.svg
+    - assets/images/img_freepik_path.svg
+    - assets/images/img_eyeoffline.svg
+    - assets/images/img_arrow_left.svg
+  fonts: 
+    - family: Sora
+      fonts: 
+        - asset: assets/fonts/SoraSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/SoraRegular.ttf
+          weight: 400

@@ -1,0 +1,44 @@
+name: login
+description: A new Flutter project.
+version: 1.0.0+1
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations: 
+    sdk: flutter
+  cached_network_image: ^3.3.0
+  flutter_svg: ^1.0.0
+  country_pickers: ^2.0.0
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  uses-material-design: true
+  assets: 
+    - assets/
+    - assets/images/
+    - assets/images/image_not_found.png
+    - assets/images/img_arrow_left.svg
+    - assets/images/img_facebook_f_logo_2019.svg
+    - assets/images/img_google.svg
+    - assets/images/img_group_10.svg
+    - assets/images/img_jordan_jo.svg
+    - assets/images/img_group_10.png
+    - assets/images/img_path1504.svg
+  fonts: 
+    - family: Sora
+      fonts: 
+        - asset: assets/fonts/SoraSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/SoraRegular.ttf
+          weight: 400
+    - family: Inter
+      fonts: 
+        - asset: assets/fonts/InterExtraBold.ttf
+          weight: 800
+    - family: Poppins
+      fonts: 
+        - asset: assets/fonts/PoppinsMedium.ttf
+          weight: 500

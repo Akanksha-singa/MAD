@@ -1,0 +1,46 @@
+name: profile_settings
+description: A new Flutter project.
+version: 1.0.0+1
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies: 
+  flutter: 
+    sdk: flutter
+  flutter_localizations: 
+    sdk: flutter
+  cached_network_image: ^3.3.0
+  flutter_svg: ^2.0.9
+  google_fonts: ^4.0.0
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  uses-material-design: true
+  assets: 
+    - assets/
+    - assets/images/
+    - assets/images/img_arrow_right.svg
+    - assets/images/img_icon_arrow_down.svg
+    - assets/images/img_lock_2_line.svg
+    - assets/images/img_mail_open_line.svg
+    - assets/images/img_smartphone_line.svg
+    - assets/images/img_user_6_line.svg
+  fonts: 
+    - family: Lato
+      fonts: 
+        - asset: assets/fonts/LatoRegular.ttf
+          weight: 400
+    - family: Sora
+      fonts: 
+        - asset: assets/fonts/SoraRegular.ttf
+          weight: 400
+        - asset: assets/fonts/SoraSemiBold.ttf
+          weight: 600
+    - family: Poppins
+      fonts: 
+        - asset: assets/fonts/PoppinsSemiBold.ttf
+          weight: 600
+    - family: Roboto
+      fonts: 
+        - asset: assets/fonts/RobotoRegular.ttf
+          weight: 400

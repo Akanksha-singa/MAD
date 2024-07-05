@@ -1,0 +1,42 @@
+name: remainders
+description: A new Flutter project.
+version: 1.0.0+1
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies: 
+  flutter: 
+    sdk: flutter
+  flutter_localizations: 
+    sdk: flutter
+  cached_network_image: ^3.3.0
+  flutter_svg: ^2.0.9
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  uses-material-design: true
+  assets: 
+    - assets/
+    - assets/images/
+    - assets/images/img_budgeting_1.svg
+    - assets/images/img_ellipse_1.svg
+    - assets/images/img_group_1.svg
+    - assets/images/img_group_7.svg
+    - assets/images/img_group_500.png
+    - assets/images/img_home_3_fill.svg
+    - assets/images/img_lightbulb_flash_line.svg
+    - assets/images/img_vector.svg
+    - assets/images/img_vector_12x12.svg
+  fonts: 
+    - family: Inter
+      fonts: 
+        - asset: assets/fonts/InterBold.ttf
+          weight: 700
+        - asset: assets/fonts/InterExtraBold.ttf
+          weight: 800
+    - family: Lato
+      fonts: 
+        - asset: assets/fonts/Lato-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Lato-Bold.ttf
+          weight: 700
