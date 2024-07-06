@@ -6,6 +6,7 @@ environment:
 dependencies: 
   flutter: 
     sdk: flutter
+  http: ^0.13.3
   flutter_localizations: 
     sdk: flutter
   cached_network_image: ^3.3.0
@@ -37,3 +38,6 @@ flutter:
       fonts: 
         - asset: assets/fonts/RobotoRegular.ttf
           weight: 400
+
+
+
