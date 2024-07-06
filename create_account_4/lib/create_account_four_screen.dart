@@ -51,10 +51,10 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
             SizedBox(height: 30),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xFFFF4D4D)),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                minimumSize: MaterialStateProperty.all(Size(double.infinity, 50)),
-                shape: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(Color(0xFFFF4D4D)),
+                foregroundColor: WidgetStateProperty.all(Colors.white),
+                minimumSize: WidgetStateProperty.all(Size(double.infinity, 50)),
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -149,7 +149,7 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
               termsAndConditions = value!;
             });
           },
-          fillColor: MaterialStateProperty.resolveWith((states) => Colors.white),
+          fillColor: WidgetStateProperty.resolveWith((states) => Colors.white),
           checkColor: Colors.black,
         ),
         Expanded(

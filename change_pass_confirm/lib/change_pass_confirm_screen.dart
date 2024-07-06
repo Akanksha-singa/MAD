@@ -51,13 +51,13 @@ class ChangePassConfirmScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFFFF4D4D)),
-                  shape: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(Color(0xFFFF4D4D)),
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                     EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),

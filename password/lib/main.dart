@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'password_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,9 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Password',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: GoogleFonts.soraTextTheme(Theme.of(context).textTheme),
-      ),
+      // theme: ThemeData(
+      //   textTheme: GoogleFonts.soraTextTheme(Theme.of(context).textTheme),
+      // ),
       home: PasswordScreen(),
     );
   }

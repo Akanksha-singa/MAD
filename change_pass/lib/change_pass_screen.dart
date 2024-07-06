@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChangePassScreen extends StatefulWidget {
@@ -67,13 +66,13 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFFFF4D4D)),
-                  shape: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(Color(0xFFFF4D4D)),
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                     EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),

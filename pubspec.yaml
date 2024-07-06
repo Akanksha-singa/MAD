@@ -1,43 +1,68 @@
 name: profile_settings
 description: A new Flutter project.
 version: 1.0.0+1
-environment: 
+
+environment:
   sdk: '>=2.12.0 <3.0.0'
-dependencies: 
-  flutter: 
+
+dependencies:
+  flutter:
     sdk: flutter
   http: ^0.13.3
-  flutter_localizations: 
+  flutter_localizations:
     sdk: flutter
   cached_network_image: ^3.3.0
   flutter_svg: ^2.0.9
-dev_dependencies: 
-  flutter_test: 
+
+dev_dependencies:
+  flutter_test:
     sdk: flutter
-flutter: 
+
+  intl: any
+  android_large___1: any
+  google_fonts: any
+  change_pass: any
+  change_pass_confirm: any
+  create_account_4: any
+  home: any
+  country_pickers: any
+  login: any
+  password: any
+  payment_fail: any
+  payment_success: any
+  remainders: any
+  settings: any
+  splitwise_friends: any
+  transfer: any
+  transfer_to_1: any
+  transfer_to_2: any
+  android_large___2: any
+flutter:
   uses-material-design: true
-  assets: 
+
+  assets:
     - assets/
     - assets/images/
-  fonts: 
+
+  fonts:
     - family: Lato
-      fonts: 
+      fonts:
         - asset: assets/fonts/LatoRegular.ttf
           weight: 400
+
     - family: Sora
-      fonts: 
+      fonts:
         - asset: assets/fonts/SoraRegular.ttf
           weight: 400
         - asset: assets/fonts/SoraSemiBold.ttf
           weight: 600
+
     - family: Poppins
-      fonts: 
+      fonts:
         - asset: assets/fonts/PoppinsSemiBold.ttf
           weight: 600
+
     - family: Roboto
-      fonts: 
+      fonts:
         - asset: assets/fonts/RobotoRegular.ttf
           weight: 400
-
-
-
