@@ -10,6 +10,7 @@ dependencies:
     sdk: flutter
   cached_network_image: ^3.3.0
   flutter_svg: ^2.0.9
+  intl: any
 dev_dependencies: 
   flutter_test: 
     sdk: flutter
@@ -18,6 +19,28 @@ flutter:
   assets: 
     - assets/
     - assets/images/
+    - assets/images/ajay.jpg
+    - assets/images/img_add_line.svg
+    - assets/images/img_budgeting_1.svg
+    - assets/images/img_download_line.svg
+    - assets/images/img_ellipse_1.svg
+    - assets/images/img_exchange_funds_line.svg
+    - assets/images/img_group.png
+    - assets/images/img_group_498.png
+    - assets/images/img_icons_home_2_1.svg
+    - assets/images/img_profile_photo.png
+    - assets/images/img_profile_photo_1.png
+    - assets/images/img_profile_photo_64x64.png
+    - assets/images/img_upload_line.svg
+    - assets/images/img_vector.svg
+    - assets/images/img_vector_16x12.svg
+
+    - assets/images/img_arrow_right.svg
+    - assets/images/img_icon_arrow_down.svg
+    - assets/images/img_lock_2_line.svg
+    - assets/images/img_mail_open_line.svg
+    - assets/images/img_smartphone_line.svg
+    - assets/images/img_user_6_line.svg
   fonts: 
     - family: Inter
       fonts: 
@@ -39,3 +62,15 @@ flutter:
           weight: 700
         - asset: assets/fonts/AntonioLight.ttf
           weight: 300
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/LatoRegular.ttf
+          weight: 400
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/PoppinsSemiBold.ttf
+          weight: 600
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/RobotoRegular.ttf
+          weight: 400
