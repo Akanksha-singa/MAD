@@ -1,6 +1,7 @@
 // home_screen.dart
 import 'package:flutter/material.dart';
 import 'profile_settings_screen.dart';
+import 'settings_screen.dart';
 import 'dart:math' as math;
 
 class MyPieChartPainter extends CustomPainter {
@@ -71,7 +72,12 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.settings, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -100,7 +106,7 @@ class HomeScreen extends StatelessWidget {
             '₹14,235.34',
             style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          Text('Main balance', style: TextStyle(color: Colors.white,fontSize: 20,)),
+          Text('Main balance', style: TextStyle(color: Colors.white, fontSize: 20)),
           SizedBox(height: 50),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -205,7 +211,7 @@ class HomeScreen extends StatelessWidget {
                         Colors.blue,
                         Colors.red,
                         Colors.green,
-                        Colors.yellow
+                        Colors.yellow,
                       ],
                     ),
                   ),
@@ -228,6 +234,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildExpenseCategories() {
     return Padding(
       padding: EdgeInsets.all(16),

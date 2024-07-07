@@ -42,6 +42,9 @@ flutter:
     - assets/images/img_mail_open_line.svg
     - assets/images/img_smartphone_line.svg
     - assets/images/img_user_6_line.svg
+
+    - assets/images/img_icon_07.svg
+    - assets/images/img_illustration_1.svg
   fonts: 
     - family: Inter
       fonts: 
