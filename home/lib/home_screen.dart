@@ -170,8 +170,8 @@ class HomeScreen extends StatelessWidget {
       // color: Colors.grey[900],
       child: Center(
         child: SizedBox(
-          height: 350.0,
-          width: 350.0,
+          height: 380.0,
+          width: 380.0,
           child: Center(
             child: Container(
               height: 150,
@@ -215,7 +215,7 @@ class HomeScreen extends StatelessWidget {
                       'Your\nExpenses',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 20.0,
                         color: Colors.white,
                       ),
                     ),
