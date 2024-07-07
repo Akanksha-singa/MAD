@@ -45,6 +45,11 @@ flutter:
 
     - assets/images/img_icon_07.svg
     - assets/images/img_illustration_1.svg
+
+    - assets/images/img_search.svg
+    - assets/images/img_profile_photo_48x48.png
+    - assets/images/aneesh.png
+    - assets/images/img_arrow_left.svg
   fonts: 
     - family: Inter
       fonts: 

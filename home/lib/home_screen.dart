@@ -1,7 +1,7 @@
-// home_screen.dart
 import 'package:flutter/material.dart';
 import 'profile_settings_screen.dart';
 import 'settings_screen.dart';
+import 'transfer_screen.dart';
 import 'dart:math' as math;
 
 class MyPieChartPainter extends CustomPainter {
@@ -85,8 +85,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildBalanceCard(),
-            _buildRecentTransfers(),
+            _buildBalanceCard(context),
+            _buildRecentTransfers(context),
             _buildExpensePieChart(),
             _buildExpenseCategories(),
           ],
@@ -96,7 +96,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceCard() {
+  Widget _buildBalanceCard(BuildContext context) {
     return Container(
       color: Color(0xFFFF4D4D),
       padding: EdgeInsets.all(16),
@@ -111,9 +111,9 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildActionButton(Icons.arrow_upward, 'Top up'),
-              _buildActionButton(Icons.arrow_downward, 'Withdraw'),
-              _buildActionButton(Icons.swap_horiz, 'Transfer'),
+              _buildActionButton(context, Icons.arrow_upward, 'Top up', null),
+              _buildActionButton(context, Icons.arrow_downward, 'Withdraw', null),
+              _buildActionButton(context, Icons.swap_horiz, 'Transfer', TransferScreen()),
             ],
           ),
         ],
@@ -121,16 +121,26 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white),
-        Text(label, style: TextStyle(color: Colors.white)),
-      ],
+  Widget _buildActionButton(BuildContext context, IconData icon, String label, Widget? screen) {
+    return GestureDetector(
+      onTap: () {
+        if (screen != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
+        }
+      },
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.white),
+          Text(label, style: TextStyle(color: Colors.white)),
+        ],
+      ),
     );
   }
 
-  Widget _buildRecentTransfers() {
+  Widget _buildRecentTransfers(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -143,10 +153,15 @@ class HomeScreen extends StatelessWidget {
           SizedBox(height: 10),
           Row(
             children: [
-              _buildTransferAvatar('+', 'Add'),
-              _buildTransferAvatar('A', 'Ajay N M'),
-              _buildTransferAvatar('A', 'Akanksha S'),
-              _buildTransferAvatar('A', 'Aneesh KP'),
+              _buildTransferAvatar(context, '+', 'Add', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TransferScreen()),
+                );
+              }),
+              _buildTransferAvatar(context, 'A', 'Ajay N M'),
+              _buildTransferAvatar(context, 'A', 'Akanksha S'),
+              _buildTransferAvatar(context, 'A', 'Aneesh KP'),
             ],
           ),
         ],
@@ -154,18 +169,21 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTransferAvatar(String label, String name) {
+  Widget _buildTransferAvatar(BuildContext context, String label, String name, [VoidCallback? onTap]) {
     return Padding(
       padding: EdgeInsets.only(right: 16),
-      child: Column(
-        children: [
-          CircleAvatar(
-            backgroundColor: label == '+' ? Colors.red[200] : Colors.orange,
-            child: Text(label, style: TextStyle(color: Colors.white)),
-          ),
-          SizedBox(height: 5),
-          Text(name, style: TextStyle(color: Colors.white, fontSize: 12)),
-        ],
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          children: [
+            CircleAvatar(
+              backgroundColor: label == '+' ? Colors.red[200] : Colors.orange,
+              child: Text(label, style: TextStyle(color: Colors.white)),
+            ),
+            SizedBox(height: 5),
+            Text(name, style: TextStyle(color: Colors.white, fontSize: 12)),
+          ],
+        ),
       ),
     );
   }
@@ -173,7 +191,6 @@ class HomeScreen extends StatelessWidget {
   Widget _buildExpensePieChart() {
     return Container(
       height: 300,
-      // color: Colors.grey[900],
       child: Center(
         child: SizedBox(
           height: 380.0,
@@ -184,7 +201,6 @@ class HomeScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Circle with gradient background
                   Center(
                     child: Container(
                       width: 150,
@@ -202,7 +218,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Lines representing percentages
                   CustomPaint(
                     size: Size(110, 110),
                     painter: MyPieChartPainter(
@@ -215,14 +230,14 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Centered text
                   Center(
                     child: Text(
                       'Your\nExpenses',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 20.0,
                         color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -238,47 +253,50 @@ class HomeScreen extends StatelessWidget {
   Widget _buildExpenseCategories() {
     return Padding(
       padding: EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildExpenseCategory('Education', Colors.yellow),
-          _buildExpenseCategory('Entertainment', Colors.pink),
-          _buildExpenseCategory('Investments', Colors.green),
-          _buildExpenseCategory('Household Bills', Colors.purple),
+          Text(
+            'Categories',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildCategoryCard('Food', '₹2,000', Colors.red),
+              _buildCategoryCard('Transport', '₹1,500', Colors.blue),
+              _buildCategoryCard('Entertainment', '₹3,000', Colors.green),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildExpenseCategory(String category, Color color) {
-    return Column(
-      children: [
-        Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+  Widget _buildCategoryCard(String title, String amount, Color color) {
+    return Card(
+      color: color,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(title, style: TextStyle(color: Colors.white)),
+            Text(amount, style: TextStyle(color: Colors.white)),
+          ],
         ),
-        SizedBox(height: 10),
-        Text(
-          category,
-          style: TextStyle(color: Colors.white, fontSize: 13),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
-      backgroundColor: Color(0xFFFF4D4D),
-      selectedItemColor: Colors.yellow,
-      unselectedItemColor: Colors.white,
+      backgroundColor: Colors.black,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
       items: [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Split'),
-        BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Bills'),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
       ],
     );
   }
