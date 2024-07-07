@@ -1,6 +1,51 @@
 // home_screen.dart
 import 'package:flutter/material.dart';
 import 'profile_settings_screen.dart';
+import 'dart:math' as math;
+
+class MyPieChartPainter extends CustomPainter {
+  final List<double> percentages;
+  final List<Color> colors;
+
+  MyPieChartPainter({required this.percentages, required this.colors});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double strokeWidth = 15.0;
+    final double radius = (size.width + 32) / 2;
+    final Offset center = Offset(size.width / 2, size.height / 2);
+
+    double startAngle = -math.pi / 2;
+
+    for (int i = 0; i < percentages.length; i++) {
+      final double sweepAngle = math.pi * 2 * percentages[i];
+      _drawArc(canvas, center, radius, startAngle, sweepAngle, colors[i],
+          strokeWidth);
+      startAngle += sweepAngle;
+    }
+  }
+
+  void _drawArc(Canvas canvas, Offset center, double radius, double startAngle,
+      double sweepAngle, Color color, double strokeWidth) {
+    final Paint paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -14,7 +59,7 @@ class HomeScreen extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfileSettingsscreen()),
+              MaterialPageRoute(builder: (context) => ProfileSettingsScreen()),
             );
           },
           child: CircleAvatar(
@@ -53,10 +98,10 @@ class HomeScreen extends StatelessWidget {
         children: [
           Text(
             '₹14,235.34',
-            style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          Text('Main balance', style: TextStyle(color: Colors.white)),
-          SizedBox(height: 20),
+          Text('Main balance', style: TextStyle(color: Colors.white,fontSize: 20,)),
+          SizedBox(height: 50),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -120,16 +165,69 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildExpensePieChart() {
-    // Implement pie chart here
     return Container(
-      height: 200,
-      color: Colors.grey[900],
+      height: 300,
+      // color: Colors.grey[900],
       child: Center(
-        child: Text('Expense Pie Chart', style: TextStyle(color: Colors.white)),
+        child: SizedBox(
+          height: 350.0,
+          width: 350.0,
+          child: Center(
+            child: Container(
+              height: 150,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Circle with gradient background
+                  Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.red[400]!,
+                            Colors.red[200]!,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Lines representing percentages
+                  CustomPaint(
+                    size: Size(110, 110),
+                    painter: MyPieChartPainter(
+                      percentages: [0.4, 0.1, 0.35, 0.15],
+                      colors: [
+                        Colors.blue,
+                        Colors.red,
+                        Colors.green,
+                        Colors.yellow
+                      ],
+                    ),
+                  ),
+                  // Centered text
+                  Center(
+                    child: Text(
+                      'Your\nExpenses',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
-
   Widget _buildExpenseCategories() {
     return Padding(
       padding: EdgeInsets.all(16),
@@ -149,17 +247,17 @@ class HomeScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: 30,
+          height: 30,
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
           ),
         ),
-        SizedBox(height: 5),
+        SizedBox(height: 10),
         Text(
           category,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: TextStyle(color: Colors.white, fontSize: 13),
         ),
       ],
     );

@@ -36,7 +36,7 @@ dev_dependencies:
   transfer: any
   transfer_to_1: any
   transfer_to_2: any
-  android_large___2: any
+#  android_large___2: any
 flutter:
   uses-material-design: true
 
