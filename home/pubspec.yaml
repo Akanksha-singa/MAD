@@ -50,6 +50,28 @@ flutter:
     - assets/images/img_profile_photo_48x48.png
     - assets/images/aneesh.png
     - assets/images/img_arrow_left.svg
+    - assets/images/img_delete_back_2_line.svg
+    - assets/images/img_lines.svg
+    - assets/images/img_delete_back_2_line.svg
+    - assets/images/img_close_line.svg
+    - assets/images/Illustration.svg
+    - assets/images/img_illustration_4.svg
+
+    - assets/images/img_facebook_f_logo_2019.svg
+    - assets/images/img_google.svg
+    - assets/images/img_group_10.png
+    - assets/images/img_group_10.svg
+    - assets/images/img_illustration_4.svg
+    - assets/images/img_jordan_jo.svg
+    - assets/images/img_lines.svg
+    - assets/images/img_path1504.svg
+    - assets/images/user.jpg
+
+    - assets/images/img_eyeoffline.svg
+    - assets/images/img_checkboxblankline.svg
+    - assets/images/img_freepik_path.svg
+    - assets/images/img_group_7.jpg
+    - assets/images/img_group_7.svg
   fonts: 
     - family: Inter
       fonts: 

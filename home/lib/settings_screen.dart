@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home_screen.dart';
 import 'profile_settings_screen.dart';
-import 'android_large_one_screen.dart'; // Ensure this file exists
+import 'android_large_one_screen.dart';
+import 'login_screen.dart'; // Added import for login screen
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -87,7 +88,7 @@ class SettingsScreen extends StatelessWidget {
           _buildDivider(),
           _buildCustomerCare(),
           _buildDivider(),
-          _buildSettingsItem('LOG IN'),
+          _buildLoginItem(context), // Updated this line
           _buildDivider(),
           _buildSettingsItem('LOG OUT'),
           _buildDivider(),
@@ -139,6 +140,34 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginItem(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'LOG IN',
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+            },
+            child: Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+          ),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart'; // Ensure this file exists
+import 'transfer_to_one_screen.dart'; // Ensure this file exists
 
 class TransferScreen extends StatelessWidget {
   @override
@@ -80,22 +81,22 @@ class TransferScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               SizedBox(height: 16),
-              _buildContactItem('Ajay N M', '+91 7892817647', 'assets/images/img_profile_photo.png'),
+              _buildContactItem(context, 'Ajay N M', '+91 7892817647', 'assets/images/img_profile_photo.png'),
               Divider(color: Colors.grey),
-              _buildContactItem('Akanksha S', '+91 9036779915', 'assets/images/img_profile_photo_48x48.png'),
+              _buildContactItem(context, 'Akanksha S', '+91 9036779915', 'assets/images/img_profile_photo_48x48.png'),
               Divider(color: Colors.grey),
-              _buildContactItem('Aneesh KP', '+91 8277608384', 'assets/images/aneesh.png'),
+              _buildContactItem(context, 'Aneesh KP', '+91 8277608384', 'assets/images/aneesh.png'),
               SizedBox(height: 24),
               Text(
                 'All contacts',
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               SizedBox(height: 16),
-              _buildContactItem('Ajay N M', '+91 7892817647', 'assets/images/img_profile_photo.png'),
+              _buildContactItem(context, 'Ajay N M', '+91 7892817647', 'assets/images/img_profile_photo.png'),
               Divider(color: Colors.grey),
-              _buildContactItem('Akanksha S', '+91 9036779915', 'assets/images/img_profile_photo_48x48.png'),
+              _buildContactItem(context, 'Akanksha S', '+91 9036779915', 'assets/images/img_profile_photo_48x48.png'),
               Divider(color: Colors.grey),
-              _buildContactItem('Aneesh KP', '+91 8277608384', 'assets/images/aneesh.png'),
+              _buildContactItem(context, 'Aneesh KP', '+91 8277608384', 'assets/images/aneesh.png'),
             ],
           ),
         ),
@@ -103,7 +104,7 @@ class TransferScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContactItem(String name, String phone, String imagePath) {
+  Widget _buildContactItem(BuildContext context, String name, String phone, String imagePath) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -122,7 +123,14 @@ class TransferScreen extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => TransferToOneScreen()),
+              );
+            },
+          ),
         ],
       ),
     );
