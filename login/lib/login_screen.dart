@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth package
+import 'auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final TextEditingController phoneNumberController = TextEditingController();
+  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +93,9 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _socialButton("assets/images/img_facebook_f_logo_2019.svg"),
-                _socialButton("assets/images/img_google.svg"),
-                _socialButton("assets/images/img_path1504.svg"),
+                // _socialButton("assets/images/img_facebook_f_logo_2019.svg", authService.signInWithFacebook),
+                _socialButton("assets/images/img_google.svg", authService.signInWithGoogle),
+                // _socialButton("assets/images/img_path1504.svg", authService.signInWithApple),
               ],
             ),
           ],
@@ -132,19 +135,29 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _socialButton(String assetName) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          assetName,
-          width: 24,
-          height: 24,
+  Widget _socialButton(String assetName, Future<User?> Function() loginMethod) {
+    return GestureDetector(
+      onTap: () async {
+        User? user = await loginMethod();
+        if (user != null) {
+          print('Login successful: ${user.email}');
+        } else {
+          print('Login failed');
+        }
+      },
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            assetName,
+            width: 24,
+            height: 24,
+          ),
         ),
       ),
     );

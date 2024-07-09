@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">login</string>
-    
+    <string name="default_web_client_id" translatable="false">app-1-798050241687-ios-e834f745ea1c5d7ae5edd2</string>
 </resources>
