@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter/services.dart';
 import 'settings_screen.dart';
 import 'create_account_four_screen.dart';
-import 'password_screen.dart'; // Add this import
+import 'package:firebase_core/firebase_core.dart';
+import 'password_screen.dart';
+import 'package:home/firebase/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
+
+  final TextEditingController phoneNumberController = TextEditingController();
+  final AuthService authService = AuthService();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Login',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+      home: LoginScreen(),
+    );
+  }
+}
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final TextEditingController phoneNumberController = TextEditingController();
+  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +72,8 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 40),
             Center(
-              child: SvgPicture.asset("assets/images/img_group_10.svg", height: 200),
+              child: SvgPicture.asset(
+                  "assets/images/img_group_10.svg", height: 200),
             ),
             SizedBox(height: 40),
             Text(
@@ -70,7 +98,8 @@ class LoginScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => CreateAccountFourScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => CreateAccountFourScreen()),
                 );
               },
               child: Text(
@@ -101,7 +130,8 @@ class LoginScreen extends StatelessWidget {
                 Expanded(child: Divider(color: Colors.white)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text("or continue using", style: TextStyle(color: Colors.white)),
+                  child: Text("or continue using",
+                      style: TextStyle(color: Colors.white)),
                 ),
                 Expanded(child: Divider(color: Colors.white)),
               ],
@@ -110,9 +140,41 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _socialButton("assets/images/img_facebook_f_logo_2019.svg"),
-                _socialButton("assets/images/img_google.svg"),
-                _socialButton("assets/images/img_path1504.svg"),
+                // _socialButton(
+                //   "assets/images/img_facebook_f_logo_2019.svg",
+                //       () async {
+                //     // Implement Facebook sign-in logic here
+                //     User? user = await authService.signInWithFacebook();
+                //     if (user != null) {
+                //       print('Facebook Login successful: ${user.email}');
+                //     } else {
+                //       print('Facebook Login failed');
+                //     }
+                //   },
+                // ),
+                _socialButton(
+                  "assets/images/img_google.svg",
+                      () async {
+                    User? user = await authService.signInWithGoogle();
+                    if (user != null) {
+                      print('Google Login successful: ${user.email}');
+                    } else {
+                      print('Google Login failed');
+                    }
+                  },
+                ),
+                // _socialButton(
+                //   "assets/images/img_path1504.svg",
+                //       () async {
+                //     // Implement Apple sign-in logic here
+                //     User? user = await authService.signInWithApple();
+                //     if (user != null) {
+                //       print('Apple Login successful: ${user.email}');
+                //     } else {
+                //       print('Apple Login failed');
+                //     }
+                //   },
+                // ),
               ],
             ),
           ],
@@ -152,19 +214,22 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _socialButton(String assetName) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          assetName,
-          width: 24,
-          height: 24,
+  Widget _socialButton(String assetName, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            assetName,
+            width: 24,
+            height: 24,
+          ),
         ),
       ),
     );

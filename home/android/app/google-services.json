@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:798050241687:android:8e55491937404f7fe5edd2",
+        "android_client_info": {
+          "package_name": "com.home.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798050241687-k6cqofi82n1bos6f89j5j9kfcmpf0o78.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByIxnHJKu1Rwvx8rbNScy7E-tBMCy7vJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798050241687-k6cqofi82n1bos6f89j5j9kfcmpf0o78.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "798050241687-almfmab1af5mm2l0tnavmhsldbha2v0k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.profilesettings.app.testProject"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:798050241687:android:cbbf5af0481f4fbce5edd2",
         "android_client_info": {
           "package_name": "finance_app.co.in"
