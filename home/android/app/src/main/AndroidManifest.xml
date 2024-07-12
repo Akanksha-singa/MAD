@@ -36,9 +36,13 @@
               android:name="io.flutter.embedding.android.SplashScreenDrawable"
               android:resource="@drawable/launch_background"
               />
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
@@ -47,4 +51,4 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-</manifest>
+</manifest><uses-permission android:name="android.permission.INTERNET"/>
