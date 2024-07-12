@@ -39,10 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ));
     }
   }
-=======
   final TextEditingController phoneNumberController = TextEditingController();
   final AuthService authService = AuthService();
->>>>>>> fa9063109f408205325be69ede22e87d945a61d6
 
   @override
   Widget build(BuildContext context) {
