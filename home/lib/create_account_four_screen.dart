@@ -154,7 +154,7 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
               termsAndConditions = value!;
             });
           },
-          fillColor: MaterialStateProperty.resolveWith((states) => Colors.white),
+          fillColor: WidgetStateProperty.resolveWith((states) => Colors.white),
           checkColor: Colors.black,
         ),
         Expanded(

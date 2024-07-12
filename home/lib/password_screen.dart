@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'for_pass_screen.dart'; // Import the forgot password screen
 
 class PasswordScreen extends StatefulWidget {
   const PasswordScreen({Key? key}) : super(key: key);
@@ -38,24 +39,24 @@ class _PasswordScreenState extends State<PasswordScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        Expanded(
-        child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/images/img_group_7.svg',
-              height: 170,
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/img_group_7.svg',
+                      height: 170,
+                    ),
+                    SizedBox(height: 0),
+                    SvgPicture.asset(
+                      'assets/images/img_freepik_path.svg',
+                      height: 170,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            SizedBox(height: 0), // Add some space between the images
-            SvgPicture.asset(
-              'assets/images/img_freepik_path.svg', // Replace with your second image path
-              height: 170,
-            ),
-          ],
-        ),
-        ),
-        ),
             Text(
               'Enter your password',
               style: GoogleFonts.sora(
@@ -104,7 +105,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                  // Handle forgot password
+                  // Navigate to ForgotPasswordScreen
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                  // );
                 },
                 child: Text(
                   'Forgot password?',
