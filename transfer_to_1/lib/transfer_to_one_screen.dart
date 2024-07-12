@@ -61,7 +61,7 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            '\$$amount',
+            '₹\amount',
             style: TextStyle(color: Colors.white, fontSize: 36),
           ),
           Container(

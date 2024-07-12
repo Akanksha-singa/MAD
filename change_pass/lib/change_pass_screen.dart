@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'change_pass_confirm_screen.dart';
 
 class ChangePassScreen extends StatefulWidget {
   ChangePassScreen({Key? key}) : super(key: key);
@@ -77,7 +78,13 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                   ),
                 ),
                 onPressed: () {
-                  // Handle password change
+                  // Navigate to change_pass_confirm_screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangePassConfirmScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   "Change password",

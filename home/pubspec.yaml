@@ -76,6 +76,11 @@ flutter:
     - assets/images/img_freepik_path.svg
     - assets/images/img_group_7.jpg
     - assets/images/img_group_7.svg
+
+    - assets/images/img_group_9.svg
+    - assets/images/img_group_499.png
+    - assets/images/img_profile_photo_2.png
+    - assets/images/img_vector_12x12.svg
   fonts: 
     - family: Inter
       fonts: 
