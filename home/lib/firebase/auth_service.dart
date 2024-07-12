@@ -28,19 +28,23 @@ class AuthService {
     }
   }
 
-  Future<User?> signInWithFacebook() async {
-    try {
-      final LoginResult result = await FacebookAuth.instance.login();
-      if (result.status == LoginStatus.success) {
-        final AccessToken accessToken = result.accessToken!;
-        final AuthCredential credential = FacebookAuthProvider.credential(accessToken.token);
-        final UserCredential userCredential = await _auth.signInWithCredential(credential);
-        return userCredential.user;
-      }
-      return null;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
+  // Future<User?> signInWithFacebook() async {
+  //   try {
+  //     final LoginResult result = await FacebookAuth.instance.login();
+  //     if (result.status == LoginStatus.success) {
+  //       final AccessToken accessToken = result.accessToken!;
+  //       final AuthCredential credential = FacebookAuthProvider.credential(accessToken.token!); // Corrected line
+  //       final UserCredential userCredential = await _auth.signInWithCredential(credential);
+  //       return userCredential.user;
+  //     }
+  //     return null;
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
+  // Future<void> signOut() async {
+  //   await FacebookAuth.instance.logOut();
+  //   await _auth.signOut();
+  // }
 }
