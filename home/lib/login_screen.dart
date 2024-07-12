@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
+import 'firebase/auth_service.dart';
 import 'home_screen.dart'; // Import the HomeScreen widget
 
 class LoginScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     try {
-      final user = await _authService.signIn(email, password);
+      final user = await _authService.signInWithGoogle();
       print('Logged in successfully: $user');
       Navigator.pushReplacement(
         context,

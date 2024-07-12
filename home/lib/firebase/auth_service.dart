@@ -23,9 +23,9 @@ class AuthService {
       return userCredential.user;
     } catch (e) {
       print('Error in signInWithGoogle: $e');
-      if (e is GoogleSignInException) {
-        print('Google Sign-In Exception: ${e.code}');
-      }
+      // if (e is GoogleSignInException) {
+      //   print('Google Sign-In Exception: ${e.code}');
+      // }
       rethrow;
     }
   }

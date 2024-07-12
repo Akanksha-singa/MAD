@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'profile_settings_screen.dart';
 import 'settings_screen.dart';
 import 'transfer_screen.dart';
+import 'splitwise_friends_tab_container_screen.dart';
 import 'dart:math' as math;
 
 class MyPieChartPainter extends CustomPainter {
@@ -48,7 +49,14 @@ class MyPieChartPainter extends CustomPainter {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,11 +96,10 @@ class HomeScreen extends StatelessWidget {
             _buildBalanceCard(context),
             _buildRecentTransfers(context),
             _buildExpensePieChart(),
-            _buildExpenseCategories(),
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
 
@@ -189,114 +196,135 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildExpensePieChart() {
-    return Container(
-      height: 300,
-      child: Center(
-        child: SizedBox(
-          height: 380.0,
-          width: 380.0,
+    return Column(
+      children: [
+        Container(
+          height: 300,
           child: Center(
-            child: Container(
-              height: 150,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 150,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+            child: SizedBox(
+              height: 380.0,
+              width: 380.0,
+              child: Center(
+                child: Container(
+                  height: 150,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.red[400]!,
+                                Colors.red[200]!,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      CustomPaint(
+                        size: Size(110, 110),
+                        painter: MyPieChartPainter(
+                          percentages: [0.4, 0.1, 0.35, 0.15],
                           colors: [
-                            Colors.red[400]!,
-                            Colors.red[200]!,
+                            Colors.blue,
+                            Colors.red,
+                            Colors.green,
+                            Colors.yellow,
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                  CustomPaint(
-                    size: Size(110, 110),
-                    painter: MyPieChartPainter(
-                      percentages: [0.4, 0.1, 0.35, 0.15],
-                      colors: [
-                        Colors.blue,
-                        Colors.red,
-                        Colors.green,
-                        Colors.yellow,
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      'Your\nExpenses',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      Center(
+                        child: Text(
+                          'Your\nExpenses',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
         ),
-      ),
+        _buildExpensePercentages(),
+      ],
     );
   }
 
-  Widget _buildExpenseCategories() {
+  Widget _buildExpensePercentages() {
     return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text(
-            'Categories',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildCategoryCard('Food', '₹2,000', Colors.red),
-              _buildCategoryCard('Transport', '₹1,500', Colors.blue),
-              _buildCategoryCard('Entertainment', '₹3,000', Colors.green),
-            ],
-          ),
+          _buildPercentageCircle('Education', Colors.yellow, 0.15),
+          _buildPercentageCircle('Entertainment', Colors.pink, 0.1),
+          _buildPercentageCircle('Investments', Colors.green, 0.35),
+          _buildPercentageCircle('Household Bills', Colors.purple, 0.4),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryCard(String title, String amount, Color color) {
-    return Card(
-      color: color,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text(title, style: TextStyle(color: Colors.white)),
-            Text(amount, style: TextStyle(color: Colors.white)),
-          ],
+  Widget _buildPercentageCircle(String label, Color color, double percentage) {
+    return Column(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+          ),
+          child: Center(
+            child: Text(
+              '${(percentage * 100).toInt()}%',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
         ),
-      ),
+        SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(color: Colors.white, fontSize: 10),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+  Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.black,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.grey,
+      backgroundColor: Color(0xFFFF4D4D),
+      selectedItemColor: Colors.yellow,
+      unselectedItemColor: Colors.white,
+      currentIndex: _selectedIndex,
+      onTap: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        if (index == 1) { // Split icon
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SplitwiseFriendsTabContainerScreen()),
+          );
+        }
+      },
       items: [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Split'),
+        BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Reminders'),
       ],
     );
   }
