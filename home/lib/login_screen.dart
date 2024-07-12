@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'firebase/auth_service.dart';
 import 'home_screen.dart'; // Import the HomeScreen widget
-=======
 import 'package:flutter_svg/flutter_svg.dart';
 import 'settings_screen.dart';
 import 'create_account_four_screen.dart';
@@ -10,12 +8,10 @@ import 'password_screen.dart';
 import 'package:home/firebase/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
->>>>>>> fa9063109f408205325be69ede22e87d945a61d6
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
-<<<<<<< HEAD
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
