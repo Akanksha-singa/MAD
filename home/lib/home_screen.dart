@@ -3,6 +3,7 @@ import 'profile_settings_screen.dart';
 import 'settings_screen.dart';
 import 'transfer_screen.dart';
 import 'splitwise_friends_tab_container_screen.dart';
+import 'remainders_screen.dart';  // Import the RemainderScreen here
 import 'dart:math' as math;
 
 class MyPieChartPainter extends CustomPainter {
@@ -21,14 +22,12 @@ class MyPieChartPainter extends CustomPainter {
 
     for (int i = 0; i < percentages.length; i++) {
       final double sweepAngle = math.pi * 2 * percentages[i];
-      _drawArc(canvas, center, radius, startAngle, sweepAngle, colors[i],
-          strokeWidth);
+      _drawArc(canvas, center, radius, startAngle, sweepAngle, colors[i], strokeWidth);
       startAngle += sweepAngle;
     }
   }
 
-  void _drawArc(Canvas canvas, Offset center, double radius, double startAngle,
-      double sweepAngle, Color color, double strokeWidth) {
+  void _drawArc(Canvas canvas, Offset center, double radius, double startAngle, double sweepAngle, Color color, double strokeWidth) {
     final Paint paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -318,6 +317,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SplitwiseFriendsTabContainerScreen()),
+          );
+        } else if (index == 2) { // Reminders icon
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RemaindersScreen()), // Navigate to RemainderScreen
           );
         }
       },
