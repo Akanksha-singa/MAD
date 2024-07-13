@@ -1,40 +1,14 @@
 import 'package:flutter/material.dart';
-import 'firebase/auth_service.dart';
-import 'home_screen.dart'; // Import the HomeScreen widget
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase/auth_service.dart';
 import 'settings_screen.dart';
 import 'create_account_four_screen.dart';
 import 'password_screen.dart';
-import 'package:home/firebase/auth_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
-
-  void _login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-
-    try {
-      final user = await _authService.signInWithGoogle();
-      print('Logged in successfully: $user');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } catch (e) {
-      print('Failed to log in: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to log in: $e'),
-      ));
-    }
-  }
   final TextEditingController phoneNumberController = TextEditingController();
   final AuthService authService = AuthService();
 
@@ -42,10 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFF4D4D), size: 18),
           onPressed: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => SettingsScreen()),
@@ -53,8 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
         title: Text(
-          " Back",
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          "Back",
+          style: TextStyle(color: Color(0xFFFF4D4D), fontSize: 14),
         ),
       ),
       body: SingleChildScrollView(
@@ -74,8 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 40),
             Center(
-              child: SvgPicture.asset(
-                  "assets/images/img_group_10.svg", height: 200),
+              child: SvgPicture.asset("assets/images/img_group_10.svg", height: 200),
             ),
             SizedBox(height: 40),
             Text(
@@ -100,8 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => CreateAccountFourScreen()),
+                  MaterialPageRoute(builder: (context) => CreateAccountFourScreen()),
                 );
               },
               child: Text(
@@ -132,35 +102,50 @@ class _LoginScreenState extends State<LoginScreen> {
                 Expanded(child: Divider(color: Colors.white)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text("or continue using",
-                      style: TextStyle(color: Colors.white)),
+                  child: Text("or continue using", style: TextStyle(color: Colors.white)),
                 ),
                 Expanded(child: Divider(color: Colors.white)),
               ],
             ),
             SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                _socialButton(
+                  "assets/images/img_facebook_f_logo_2019.svg",
+                      () async {
+                    // Implement Facebook sign-in logic here
+                    // User? user = await authService.signInWithFacebook();
+                    // if (user != null) {
+                    //   print('Facebook Login successful: ${user.email}');
+                    // } else {
+                    //   print('Facebook Login failed');
+                    // }
+                  },
+                ),
                 _socialButton(
                   "assets/images/img_google.svg",
                       () async {
                     User? user = await authService.signInWithGoogle();
                     if (user != null) {
                       print('Google Login successful: ${user.email}');
-                      // Navigate to the home screen
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
                     } else {
                       print('Google Login failed');
-                      // Show an error message to the user
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Google Sign-In failed. Please try again.')),
-                      );
                     }
                   },
                 ),
+                // _socialButton(
+                //   "assets/images/img_path1504.svg",
+                //       () async {
+                //     // Implement Apple sign-in logic here
+                //     User? user = await authService.signInWithApple();
+                //     if (user != null) {
+                //       print('Apple Login successful: ${user.email}');
+                //     } else {
+                //       print('Apple Login failed');
+                //     }
+                //   },
+                // ),
               ],
             ),
           ],
@@ -200,9 +185,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialButton(String assetName, VoidCallback onTap) {
+  Widget _socialButton(String assetName, Function onTap) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => onTap(),
       child: Container(
         width: 60,
         height: 60,
