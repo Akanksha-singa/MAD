@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'firebase/auth_service.dart';
-import 'settings_screen.dart';
-import 'create_account_four_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'password_screen.dart';
+import 'create_account_four_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final TextEditingController phoneNumberController = TextEditingController();
-  final AuthService authService = AuthService();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +17,7 @@ class LoginScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFF4D4D), size: 18),
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => SettingsScreen()),
-            );
+            Navigator.of(context).pop();
           },
         ),
         title: Text(
@@ -68,23 +64,9 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 16),
             _buildPhoneNumberInput(),
             SizedBox(height: 16),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => CreateAccountFourScreen()),
-                );
-              },
-              child: Text(
-                "Create Account",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => PasswordScreen()),
-                );
+                _checkPhoneNumber(context);
               },
               child: Text("Continue"),
               style: ElevatedButton.styleFrom(
@@ -98,60 +80,74 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(child: Divider(color: Colors.white)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text("or continue using", style: TextStyle(color: Colors.white)),
+                Text(
+                  "Don't have an account? ",
+                  style: TextStyle(color: Colors.white),
                 ),
-                Expanded(child: Divider(color: Colors.white)),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => CreateAccountFourScreen()),
+                    );
+                  },
+                  child: Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      color: Color(0xFFFF4D4D),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _socialButton(
-                  "assets/images/img_facebook_f_logo_2019.svg",
-                      () async {
-                    // Implement Facebook sign-in logic here
-                    // User? user = await authService.signInWithFacebook();
-                    // if (user != null) {
-                    //   print('Facebook Login successful: ${user.email}');
-                    // } else {
-                    //   print('Facebook Login failed');
-                    // }
-                  },
-                ),
-                _socialButton(
-                  "assets/images/img_google.svg",
-                      () async {
-                    User? user = await authService.signInWithGoogle();
-                    if (user != null) {
-                      print('Google Login successful: ${user.email}');
-                    } else {
-                      print('Google Login failed');
-                    }
-                  },
-                ),
-                // _socialButton(
-                //   "assets/images/img_path1504.svg",
-                //       () async {
-                //     // Implement Apple sign-in logic here
-                //     User? user = await authService.signInWithApple();
-                //     if (user != null) {
-                //       print('Apple Login successful: ${user.email}');
-                //     } else {
-                //       print('Apple Login failed');
-                //     }
-                //   },
-                // ),
-              ],
-            ),
           ],
         ),
       ),
     );
+  }
+
+  void _checkPhoneNumber(BuildContext context) {
+    String phoneNumber = phoneNumberController.text.trim();
+    if (phoneNumber.isNotEmpty) {
+      // Query Firestore to check if the phone number exists
+      firestore
+          .collection('users')
+          .where('phone_number', isEqualTo: phoneNumber)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          // Phone number found, navigate to PasswordScreen
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => PasswordScreen()),
+          );
+        } else {
+          // Phone number not found, show pop-up dialog
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Invalid Phone Number'),
+              content: Text('The phone number entered does not exist.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      }).catchError((error) {
+        print("Failed to check phone number: $error");
+        // Handle error if necessary
+      });
+    } else {
+      print("Phone number is empty");
+    }
   }
 
   Widget _buildPhoneNumberInput() {
@@ -164,7 +160,7 @@ class LoginScreen extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            "+962",
+            "+91",
             style: TextStyle(color: Colors.white, fontSize: 14),
           ),
           SizedBox(width: 8),
@@ -174,34 +170,13 @@ class LoginScreen extends StatelessWidget {
               style: TextStyle(color: Colors.white),
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                hintText: "7X-XXXXXXX",
+                hintText: "0000000000",
                 hintStyle: TextStyle(color: Colors.grey),
                 border: InputBorder.none,
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _socialButton(String assetName, Function onTap) {
-    return GestureDetector(
-      onTap: () => onTap(),
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            assetName,
-            width: 24,
-            height: 24,
-          ),
-        ),
       ),
     );
   }

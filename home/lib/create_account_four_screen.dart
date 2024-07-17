@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:home/home_screen.dart';
 import 'login_screen.dart'; // Add this import
 
 class CreateAccountFourScreen extends StatefulWidget {
@@ -13,6 +16,8 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
   TextEditingController passwordController = TextEditingController();
   bool termsAndConditions = false;
   bool _obscureText = true;
+
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +55,7 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
             SizedBox(height: 20),
             _buildTextField('Name', 'e.g. John Doe', nameController),
             SizedBox(height: 16),
-            _buildTextField('Email', 'e.g. email@example.com', emailController),
+            _buildTextField('Phone Number', 'e.g. 8989898989', emailController),
             SizedBox(height: 16),
             _buildPasswordField(),
             SizedBox(height: 20),
@@ -65,16 +70,63 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () {},
+              onPressed: _createAccount,
               child: Text('Create a new account'),
             ),
             SizedBox(height: 20),
-            _buildDivider(),
+            // _buildDivider(),
             SizedBox(height: 20),
-            _buildSocialLogin(),
+            // _buildSocialLogin(),
           ],
         ),
       ),
+    );
+  }
+
+  void _createAccount() {
+    String name = nameController.text.trim();
+    String phoneNumber = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (name.isNotEmpty && phoneNumber.isNotEmpty && password.isNotEmpty && termsAndConditions) {
+      // Add user data to Firestore
+      firestore.collection('users').doc(phoneNumber).set({
+        'name': name,
+        'phone_number': phoneNumber,
+        'password': password,
+        'timestamp': FieldValue.serverTimestamp(),
+      }).then((value) {
+        print("User data added to Firestore");
+        showSuccessDialog(); // Show success dialog on successful account creation
+      }).catchError((error) {
+        print("Failed to add user data: $error");
+      });
+    } else {
+      // Handle case where form data is incomplete or terms are not accepted
+      print("Please fill in all fields and accept terms and conditions.");
+    }
+  }
+
+  void showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Account Creation Successful"),
+          content: Text("Your account has been created successfully."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                ); // Navigate back to login screen
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -154,7 +206,7 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
               termsAndConditions = value!;
             });
           },
-          fillColor: WidgetStateProperty.resolveWith((states) => Colors.white),
+          fillColor: MaterialStateProperty.resolveWith((states) => Color(0xFFFF4D4D)),
           checkColor: Colors.black,
         ),
         Expanded(
@@ -164,51 +216,6 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildDivider() {
-    return Row(
-      children: [
-        Expanded(child: Divider(color: Colors.white)),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'or continue using',
-            style: TextStyle(color: Colors.white, fontSize: 12),
-          ),
-        ),
-        Expanded(child: Divider(color: Colors.white)),
-      ],
-    );
-  }
-
-  Widget _buildSocialLogin() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _socialButton('assets/images/img_facebook_f_logo_2019.svg'),
-        _socialButton('assets/images/img_google.svg'),
-        _socialButton('assets/images/img_path1504.svg'),
-      ],
-    );
-  }
-
-  Widget _socialButton(String assetName) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          assetName,
-          width: 24,
-          height: 24,
-        ),
-      ),
     );
   }
 }
