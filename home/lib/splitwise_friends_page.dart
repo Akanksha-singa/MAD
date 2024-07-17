@@ -1,20 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SplitwiseFriendsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      children: [
-        _buildFriendItem('Ajay N M', -500, 'assets/images/ajay.png'),
-        _buildFriendItem('Amelia K P', -500, 'assets/images/amelia.png'),
-        _buildFriendItem('Angelina V', -500, 'assets/images/angelina.png'),
-        _buildFriendItem('Irin', 50, 'assets/images/irin.png'),
-      ],
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('SplitWise').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children: snapshot.data!.docs.map((doc) {
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            return FriendCard(
+              name: data['name'],
+              amount: data['amount'].toDouble(),
+              imagePath: data['imagePath'],
+              phoneNumber: doc.id,
+            );
+          }).toList(),
+        );
+      },
     );
   }
+}
 
-  Widget _buildFriendItem(String name, double amount, String imagePath) {
+class FriendCard extends StatelessWidget {
+  final String name;
+  final double amount;
+  final String imagePath;
+  final String phoneNumber;
+
+  FriendCard({
+    required this.name,
+    required this.amount,
+    required this.imagePath,
+    required this.phoneNumber,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.all(12),
@@ -48,8 +80,20 @@ class SplitwiseFriendsPage extends StatelessWidget {
             '₹${amount.abs()}',
             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.white),
+            onPressed: () => _deleteFriend(context),
+          ),
         ],
       ),
     );
+  }
+
+  void _deleteFriend(BuildContext context) {
+    FirebaseFirestore.instance.collection('SplitWise').doc(phoneNumber).delete().then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend removed')));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to remove friend: $error')));
+    });
   }
 }

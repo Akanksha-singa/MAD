@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'payment_fail_screen.dart';
+import 'payment_success_screen.dart';
 
 class TransferToOneScreen extends StatefulWidget {
+  final String name;
+  final String phone;
+  final String imagePath;
+
+  TransferToOneScreen({required this.name, required this.phone, required this.imagePath});
+
   @override
   _TransferToOneScreenState createState() => _TransferToOneScreenState();
 }
@@ -18,12 +26,36 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
     });
   }
 
+  void processPayment() {
+    double amountValue = double.tryParse(amount) ?? 0.0;
+    if (amountValue > 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentSuccessScreen(
+            amount: amount,
+            recipientName: widget.name,
+          ),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentFailScreen(),
+        ),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Color(0xFFFF4D4D)),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -43,15 +75,15 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
           SizedBox(height: 20),
           CircleAvatar(
             radius: 36,
-            backgroundImage: AssetImage('assets/images/img_profile_photo.png'),
+            backgroundImage: AssetImage(widget.imagePath),
           ),
           SizedBox(height: 10),
           Text(
-            'Ajay N M',
+            widget.name,
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
           Text(
-            '+91 7892817647',
+            widget.phone,
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
           SizedBox(height: 40),
@@ -61,7 +93,7 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            '₹\amount',
+            '₹$amount',
             style: TextStyle(color: Colors.white, fontSize: 36),
           ),
           Container(
@@ -85,7 +117,9 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
                     backgroundColor: Color(0xFFFF4D4D),
                     minimumSize: Size(double.infinity, 50),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    // Implement transfer logic here
+                  },
                 ),
                 SizedBox(height: 20),
               ],
