@@ -67,25 +67,304 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchWalletBalance() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final String? userPhoneNumber = auth.currentUser?.phoneNumber;
 
-    try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('users')
-          .orderBy('timestamp', descending: true)
-          .limit(1)
-          .get();
+    if (userPhoneNumber != null) {
+      try {
+        DocumentSnapshot documentSnapshot = await firestore
+            .collection('users')
+            .doc(userPhoneNumber)
+            .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
-        setState(() {
-          _walletBalance = documentSnapshot['wallet'].toDouble();
-        });
+        if (documentSnapshot.exists) {
+          Map<String, dynamic> userData = documentSnapshot.data() as Map<String, dynamic>;
+          setState(() {
+            _walletBalance = userData['wallet'].toDouble();
+          });
+        } else {
+          print("User document does not exist");
+        }
+      } catch (e) {
+        print("Error fetching wallet balance: $e");
       }
-    } catch (e) {
-      print("Error fetching wallet balance: $e");
+    } else {
+      print("User not authenticated");
     }
   }
+  Future<void> _handleWithdrawal() async {
+    String? phoneNumber = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String? inputPhoneNumber;
+        return AlertDialog(
+          title: Text('Enter Phone Number'),
+          content: TextField(
+            keyboardType: TextInputType.phone,
+            onChanged: (value) {
+              inputPhoneNumber = value;
+            },
+            decoration: InputDecoration(hintText: "Enter your phone number"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Continue'),
+              onPressed: () {
+                Navigator.of(context).pop(inputPhoneNumber);
+              },
+            ),
+          ],
+        );
+      },
+    );
 
+    if (phoneNumber == null || phoneNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Phone number is required')),
+      );
+      return;
+    }
+
+    String? amount = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String? inputAmount;
+        return AlertDialog(
+          title: Text('Withdraw'),
+          content: TextField(
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (value) {
+              inputAmount = value;
+            },
+            decoration: InputDecoration(hintText: "Enter amount to withdraw"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Withdraw'),
+              onPressed: () {
+                Navigator.of(context).pop(inputAmount);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (amount != null && amount.isNotEmpty) {
+      double withdrawalAmount = double.parse(amount);
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      try {
+        await firestore.runTransaction((transaction) async {
+          DocumentReference userRef = firestore.collection('users').doc(phoneNumber);
+          DocumentSnapshot userSnapshot = await transaction.get(userRef);
+
+          if (userSnapshot.exists) {
+            Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+            // Check if all required fields exist
+            if (userData.containsKey('balance') &&
+                userData.containsKey('wallet') &&
+                userData.containsKey('name') &&
+                userData.containsKey('phone_number')) {
+
+              double currentBalance = userData['balance'].toDouble();
+              double currentWallet = userData['wallet'].toDouble();
+              String userName = userData['name'];
+              String userPhoneNumber = userData['phone_number'];
+
+              if (userPhoneNumber != phoneNumber) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Phone number does not match the user document')),
+                );
+                return;
+              }
+
+              if (withdrawalAmount <= currentBalance) {
+                transaction.update(userRef, {
+                  'balance': currentBalance - withdrawalAmount,
+                  'wallet': currentWallet + withdrawalAmount,
+                });
+
+                setState(() {
+                  _walletBalance = currentWallet + withdrawalAmount;
+                });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Successfully withdrew ₹$withdrawalAmount for $userName')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Insufficient balance')),
+                );
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('User document is missing required fields')),
+              );
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('User not found')),
+            );
+          }
+        });
+      } catch (e) {
+        print("Error during withdrawal: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error occurred during withdrawal')),
+        );
+      }
+    }
+  }
+  Future<void> _handleTopUp() async {
+    String? phoneNumber = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String? inputPhoneNumber;
+        return AlertDialog(
+          title: Text('Enter Phone Number'),
+          content: TextField(
+            keyboardType: TextInputType.phone,
+            onChanged: (value) {
+              inputPhoneNumber = value;
+            },
+            decoration: InputDecoration(hintText: "Enter your phone number"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Continue'),
+              onPressed: () {
+                Navigator.of(context).pop(inputPhoneNumber);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (phoneNumber == null || phoneNumber.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Phone number is required')),
+      );
+      return;
+    }
+
+    String? amount = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String? inputAmount;
+        return AlertDialog(
+          title: Text('Top Up'),
+          content: TextField(
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (value) {
+              inputAmount = value;
+            },
+            decoration: InputDecoration(hintText: "Enter amount to top up"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Top Up'),
+              onPressed: () {
+                Navigator.of(context).pop(inputAmount);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (amount != null && amount.isNotEmpty) {
+      double topUpAmount = double.parse(amount);
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      try {
+        await firestore.runTransaction((transaction) async {
+          DocumentReference userRef = firestore.collection('users').doc(phoneNumber);
+          DocumentSnapshot userSnapshot = await transaction.get(userRef);
+
+          if (userSnapshot.exists) {
+            Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+
+            if (userData.containsKey('balance') &&
+                userData.containsKey('wallet') &&
+                userData.containsKey('name') &&
+                userData.containsKey('phone_number')) {
+
+              double currentBalance = userData['balance'].toDouble();
+              double currentWallet = userData['wallet'].toDouble();
+              String userName = userData['name'];
+              String userPhoneNumber = userData['phone_number'];
+
+              if (userPhoneNumber != phoneNumber) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Phone number does not match the user document')),
+                );
+                return;
+              }
+
+              if (topUpAmount <= currentWallet) {
+                transaction.update(userRef, {
+                  'balance': currentBalance + topUpAmount,
+                  'wallet': currentWallet - topUpAmount,
+                });
+
+                setState(() {
+                  _walletBalance = currentWallet - topUpAmount;
+                });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Successfully topped up ₹$topUpAmount for $userName')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Insufficient funds in wallet')),
+                );
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('User document is missing required fields')),
+              );
+            }
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('User not found')),
+            );
+          }
+        });
+      } catch (e) {
+        print("Error during top up: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error occurred during top up')),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,8 +426,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildActionButton(context, Icons.arrow_upward, 'Top up', null),
               _buildActionButton(context, Icons.arrow_downward, 'Withdraw', null),
+              _buildActionButton(context, Icons.arrow_upward, 'Top up', null),
               _buildActionButton(context, Icons.swap_horiz, 'Transfer', TransferScreen()),
             ],
           ),
@@ -160,7 +439,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildActionButton(BuildContext context, IconData icon, String label, Widget? screen) {
     return GestureDetector(
       onTap: () {
-        if (screen != null) {
+        if (label == 'Top up') {
+          _handleTopUp();
+        } else if (label == 'Withdraw') {
+          _handleWithdrawal();
+        } else if (screen != null) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => screen),
