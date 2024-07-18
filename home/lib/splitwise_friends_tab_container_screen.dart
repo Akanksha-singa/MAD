@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'splitwise_friends_page.dart';
 import 'splitwise_groups_page.dart';
 
@@ -31,7 +32,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            // Implement adding new friend logic here
+            _showAddDialog(context);
           },
         ),
       ),
@@ -39,9 +40,161 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
   }
 
   Widget _buildBalanceCard() {
-    // Implement the balance card widget here
     return Container(
-      // Add your balance card implementation
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Total Balance',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            '₹1000',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+          ),
+        ],
+      ),
     );
+  }
+
+  void _showAddDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add New'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                child: Text('Add Friend'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _showAddFriendDialog(context);
+                },
+              ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                child: Text('Add Group'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Implement add group logic
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAddFriendDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final phoneController = TextEditingController();
+    final amountController = TextEditingController();
+    bool youOwe = true;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Add Friend'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(labelText: 'Name'),
+                    ),
+                    TextField(
+                      controller: phoneController,
+                      decoration: InputDecoration(labelText: 'Phone Number'),
+                      keyboardType: TextInputType.phone,
+                    ),
+                    TextField(
+                      controller: amountController,
+                      decoration: InputDecoration(labelText: 'Amount'),
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    ),
+                    Row(
+                      children: [
+                        Text('You owe'),
+                        Switch(
+                          value: youOwe,
+                          onChanged: (value) {
+                            setState(() {
+                              youOwe = value;
+                            });
+                          },
+                        ),
+                        Text('Owes you'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                TextButton(
+                  child: Text('Add'),
+                  onPressed: () {
+                    _addFriend(
+                      context,
+                      nameController.text,
+                      phoneController.text,
+                      amountController.text,
+                      youOwe,
+                    );
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _addFriend(BuildContext context, String name, String phone, String amount, bool youOwe) {
+    if (name.isEmpty || phone.isEmpty || amount.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields')));
+      return;
+    }
+
+    double parsedAmount = double.tryParse(amount) ?? 0.0;
+    if (youOwe) {
+      parsedAmount = -parsedAmount;
+    }
+
+    FirebaseFirestore.instance.collection('SplitWise').doc(phone).set({
+      'name': name,
+      'amount': parsedAmount,
+      'imagePath': 'assets/images/default_avatar.png', // Use a default image path
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend added successfully')));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add friend: $error')));
+    });
   }
 }
