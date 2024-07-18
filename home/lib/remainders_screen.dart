@@ -100,8 +100,9 @@ class _RemindersListState extends State<RemindersList> {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
+        var latestUserDoc = querySnapshot.docs.first;
         setState(() {
-          userPhoneNumber = querySnapshot.docs.first.id;
+          userPhoneNumber = latestUserDoc['phoneNumber'] as String;
         });
       } else {
         print('No users found in the database.');
@@ -111,15 +112,24 @@ class _RemindersListState extends State<RemindersList> {
     }
   }
 
-  Future<void> deleteReminder(String reminderId) async {
+  Future<void> deleteReminderAndUpdateWallet(String reminderId, int amount) async {
     try {
-      await FirebaseFirestore.instance
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      DocumentReference reminderRef = FirebaseFirestore.instance
           .collection('reminders')
-          .doc(userPhoneNumber)
-          .update({reminderId: FieldValue.delete()});
-      print('Reminder deleted successfully');
+          .doc(userPhoneNumber);
+      batch.update(reminderRef, {reminderId: FieldValue.delete()});
+
+      DocumentReference userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userPhoneNumber);
+      batch.update(userRef, {'wallet': FieldValue.increment(-amount)});
+
+      await batch.commit();
+      print('Reminder deleted and wallet updated successfully');
     } catch (e) {
-      print('Error deleting reminder: $e');
+      print('Error deleting reminder and updating wallet: $e');
     }
   }
 
@@ -155,14 +165,14 @@ class _RemindersListState extends State<RemindersList> {
           if (value is Map<String, dynamic>) {
             reminderWidgets.add(
               GestureDetector(
-                onDoubleTap: () {
+                onTap: () {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('Delete Reminder'),
                         content: Text(
-                            'Are you sure you want to delete this reminder?'),
+                            'Are you sure you want to delete this reminder and subtract ₹${value['amount']} from your wallet?'),
                         actions: <Widget>[
                           TextButton(
                             child: Text('Cancel'),
@@ -173,7 +183,7 @@ class _RemindersListState extends State<RemindersList> {
                           TextButton(
                             child: Text('Delete'),
                             onPressed: () {
-                              deleteReminder(key);
+                              deleteReminderAndUpdateWallet(key, value['amount']);
                               Navigator.of(context).pop();
                             },
                           ),
@@ -277,8 +287,9 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
+        var latestUserDoc = querySnapshot.docs.first;
         setState(() {
-          userPhoneNumber = querySnapshot.docs.first.id;
+          userPhoneNumber = latestUserDoc['phoneNumber'] as String;
         });
       } else {
         print('No users found in the database.');
