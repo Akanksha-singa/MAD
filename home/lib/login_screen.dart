@@ -15,14 +15,13 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFF4D4D), size: 18),
+          icon: Icon(Icons.arrow_back, color: Colors.black, size: 18),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text(
-          "Back",
-          style: TextStyle(color: Color(0xFFFF4D4D), fontSize: 14),
+        title: Text("Back",
+          style: TextStyle(color: Colors.black, fontSize: 14),
         ),
       ),
       body: SingleChildScrollView(

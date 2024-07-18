@@ -25,18 +25,23 @@ class _PasswordScreenState extends State<PasswordScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: TextButton.icon(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.arrow_back, color: Color(0xFFFF4D4D)),
-          label: Text(
-            'Back',
-            style: TextStyle(color: Color(0xFFFF4D4D)),
-          ),
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            alignment: Alignment.centerLeft,
+        leading: InkWell(
+          onTap: () => Navigator.of(context).pop(),
+          child: Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Row(
+              children: [
+                Icon(Icons.arrow_back_ios, color: Color(0xFFFF4D4D), size: 18),
+                SizedBox(width: 4),
+                Text(
+                  'Back',
+                  style: TextStyle(color: Color(0xFFFF4D4D), fontSize: 14),
+                ),
+              ],
+            ),
           ),
         ),
+        leadingWidth: 100,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
