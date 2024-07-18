@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class RemaindersScreen extends StatefulWidget {
+class RemindersScreen extends StatefulWidget {
   @override
-  _RemaindersScreenState createState() => _RemaindersScreenState();
+  _RemindersScreenState createState() => _RemindersScreenState();
 }
 
-class _RemaindersScreenState extends State<RemaindersScreen> {
+class _RemindersScreenState extends State<RemindersScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-=======
-import 'package:cloud_firestore/cloud_firestore.dart';
->>>>>>> 742ca4b7fd34e97293b4c23dff149cc2a69ad5e5
 
   @override
   Widget build(BuildContext context) {
@@ -44,41 +40,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
           ),
         ],
       ),
-<<<<<<< HEAD
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _auth.currentUser != null
-            ? _firestore.collection('remainders').doc(_auth.currentUser!.uid).collection('items').snapshots()
-            : Stream.empty(),
-        builder: (context, snapshot) {
-          if (_auth.currentUser == null) {
-            return Center(child: Text('Please log in to view remainders', style: TextStyle(color: Colors.white)));
-          }
-
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          final remainders = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: remainders.length,
-            itemBuilder: (context, index) {
-              final remainder = remainders[index];
-              return _buildRemainderCard(
-                remainder.id,
-                remainder['title'],
-                remainder['dueDate'],
-                remainder['amount'],
-                remainder['icon'],
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add new remainder
-=======
       body: RemindersList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -86,7 +47,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
             context,
             MaterialPageRoute(builder: (context) => AddReminderScreen()),
           );
->>>>>>> 742ca4b7fd34e97293b4c23dff149cc2a69ad5e5
         },
         child: Icon(Icons.add),
         backgroundColor: Color(0xFFFF4D4D),
@@ -176,14 +136,19 @@ class _RemindersListState extends State<RemindersList> {
         }
 
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text('Error: ${snapshot.error}',
+                  style: TextStyle(color: Colors.white)));
         }
 
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          return Center(child: Text('No reminders added yet.', style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text('No reminders added yet.',
+                  style: TextStyle(color: Colors.white)));
         }
 
-        Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+        snapshot.data!.data() as Map<String, dynamic>;
         List<Widget> reminderWidgets = [];
 
         data.forEach((key, value) {
@@ -196,7 +161,8 @@ class _RemindersListState extends State<RemindersList> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('Delete Reminder'),
-                        content: Text('Are you sure you want to delete this reminder?'),
+                        content: Text(
+                            'Are you sure you want to delete this reminder?'),
                         actions: <Widget>[
                           TextButton(
                             child: Text('Cancel'),
@@ -216,7 +182,7 @@ class _RemindersListState extends State<RemindersList> {
                     },
                   );
                 },
-                child: _buildRemainderCard(
+                child: _buildReminderCard(
                   value['title'],
                   value['dueDate'],
                   value['amount'],
@@ -235,75 +201,49 @@ class _RemindersListState extends State<RemindersList> {
     );
   }
 
-<<<<<<< HEAD
-  Widget _buildRemainderCard(String id, String title, String dueDate, int amount, String iconName) {
-    return Dismissible(
-      key: Key(id),
-      background: Container(
-        color: Colors.green,
-        child: Icon(Icons.check, color: Colors.white),
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 20),
-=======
-  Widget _buildRemainderCard(String title, String dueDate, int amount, IconData icon) {
+  Widget _buildReminderCard(
+      String title, String dueDate, int amount, IconData icon) {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Color(0xFFFF4D4D),
         borderRadius: BorderRadius.circular(10),
->>>>>>> 742ca4b7fd34e97293b4c23dff149cc2a69ad5e5
       ),
-      secondaryBackground: Container(
-        color: Colors.red,
-        child: Icon(Icons.delete, color: Colors.white),
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
-      ),
-      onDismissed: (direction) {
-        if (direction == DismissDirection.endToStart) {
-          // Delete the remainder
-          _firestore.collection('remainders').doc(_auth.currentUser!.uid).collection('items').doc(id).delete();
-        } else {
-          // Mark as done
-          _firestore.collection('remainders').doc(_auth.currentUser!.uid).collection('items').doc(id).update({'isDone': true});
-        }
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: Color(0xFFFF4D4D),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(IconData(int.parse(iconName), fontFamily: 'MaterialIcons'), color: Color(0xFFFF4D4D)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(icon, color: Color(0xFFFF4D4D)),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    'Due date: $dueDate',
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ],
               ),
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Due date: $dueDate',
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                '₹$amount',
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+            ),
+            Text(
+              '₹$amount',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -384,7 +324,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
     );
   }
 
-  Widget _buildTextField(String label, String hint, TextEditingController controller) {
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -423,9 +364,13 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
         'amount': amount,
       };
 
-      FirebaseFirestore.instance.collection('reminders').doc(userPhoneNumber).set({
+      FirebaseFirestore.instance
+          .collection('reminders')
+          .doc(userPhoneNumber)
+          .set({
         'reminder_${DateTime.now().millisecondsSinceEpoch}': newReminder
-      }, SetOptions(merge: true)).then((value) {
+      }, SetOptions(merge: true))
+          .then((value) {
         print('Reminder added successfully');
         Navigator.pop(context);
       }).catchError((error) {

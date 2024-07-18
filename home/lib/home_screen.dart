@@ -321,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (index == 2) { // Reminders icon
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RemaindersScreen()), // Navigate to RemainderScreen
+            MaterialPageRoute(builder: (context) => RemindersScreen()), // Navigate to RemainderScreen
           );
         }
       },
