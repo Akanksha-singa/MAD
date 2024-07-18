@@ -42,10 +42,7 @@ class SplitwiseGroupsTabContainerScreen extends StatelessWidget {
   Widget _buildHeading() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Text(
-        'Splitwise',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
+
     );
   }
 
