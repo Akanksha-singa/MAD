@@ -15,14 +15,18 @@ class SplitwiseFriendsPage extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
 
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('No friends added yet'));
+        }
+
         return ListView(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           children: snapshot.data!.docs.map((doc) {
             Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
             return FriendCard(
-              name: data['name'],
-              amount: data['amount'],
-              imagePath: data['imagePath'],
+              name: data['name'] ?? '',
+              amount: data['amount'] ?? 0.0,
+              imagePath: data['imagePath'] ?? 'assets/images/default_avatar.png',
               phoneNumber: doc.id,
             );
           }).toList(),
@@ -47,14 +51,13 @@ class FriendCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double parsedAmount;
-    try {
-      parsedAmount = (amount is String)
-          ? double.parse(amount)
-          : (amount as num).toDouble();
-    } catch (e) {
-      parsedAmount = 0.0;
-      print('Error parsing amount: $e');
+    double parsedAmount = 0.0;
+    if (amount is int) {
+      parsedAmount = amount.toDouble();
+    } else if (amount is double) {
+      parsedAmount = amount;
+    } else if (amount is String) {
+      parsedAmount = double.tryParse(amount) ?? 0.0;
     }
 
     return GestureDetector(
