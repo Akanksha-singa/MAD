@@ -30,7 +30,9 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () {},
+          onPressed: () {
+            // Implement adding new friend logic here
+          },
         ),
       ),
     );

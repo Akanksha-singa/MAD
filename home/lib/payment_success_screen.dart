@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'home_screen.dart'; // Import your home screen
 
 class PaymentSuccessScreen extends StatelessWidget {
-  const PaymentSuccessScreen({Key? key}) : super(key: key);
+  final String amount;
+  final String recipientName;
+
+  const PaymentSuccessScreen({
+    Key? key,
+    required this.amount,
+    required this.recipientName,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +59,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                   children: [
                     TextSpan(text: 'You have successfully transferred\n'),
                     TextSpan(
-                      text: '\$1,000',
+                      text: '\$$amount',
                       style: TextStyle(
                         color: Color(0xFFFF4D4D),
                         fontWeight: FontWeight.bold,
@@ -59,7 +67,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                     ),
                     TextSpan(text: ' to '),
                     TextSpan(
-                      text: 'Ajay N M!',
+                      text: '$recipientName!',
                       style: TextStyle(
                         color: Color(0xFFE77676),
                         fontWeight: FontWeight.bold,
@@ -75,7 +83,11 @@ class PaymentSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Add your back to wallet logic here
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                            (Route<dynamic> route) => false,
+                      );
                     },
                     child: Text('Back to wallet'),
                     style: ElevatedButton.styleFrom(

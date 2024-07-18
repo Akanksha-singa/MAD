@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // Ensure this file exists
-import 'transfer_to_one_screen.dart'; // Ensure this file exists
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'home_screen.dart';
+import 'transfer_to_one_screen.dart';
 
 class TransferScreen extends StatelessWidget {
   @override
@@ -81,57 +82,97 @@ class TransferScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               SizedBox(height: 16),
-              _buildContactItem(context, 'Ajay N M', '+91 7892817647', 'assets/images/img_profile_photo.png'),
-              Divider(color: Colors.grey),
-              _buildContactItem(context, 'Akanksha S', '+91 9036779915', 'assets/images/img_profile_photo_48x48.png'),
-              Divider(color: Colors.grey),
-              _buildContactItem(context, 'Aneesh KP', '+91 8277608384', 'assets/images/aneesh.png'),
+              ContactList(frequent: true),
               SizedBox(height: 24),
               Text(
                 'All contacts',
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               SizedBox(height: 16),
-              _buildContactItem(context, 'Ajay N M', '+91 7892817647', 'assets/images/img_profile_photo.png'),
-              Divider(color: Colors.grey),
-              _buildContactItem(context, 'Akanksha S', '+91 9036779915', 'assets/images/img_profile_photo_48x48.png'),
-              Divider(color: Colors.grey),
-              _buildContactItem(context, 'Aneesh KP', '+91 8277608384', 'assets/images/aneesh.png'),
+              ContactList(frequent: false),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildContactItem(BuildContext context, String name, String phone, String imagePath) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: AssetImage(imagePath),
-            radius: 24,
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: TextStyle(color: Colors.white)),
-                Text(phone, style: TextStyle(color: Colors.grey)),
-              ],
+class ContactList extends StatelessWidget {
+  final bool frequent;
+
+  ContactList({required this.frequent});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('contacts')
+          .where('frequent', isEqualTo: frequent)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+
+        return Column(
+          children: snapshot.data!.docs.map((doc) {
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            return ContactCard(
+              name: data['name'],
+              phone: data['phone'],
+              imagePath: data['imagePath'],
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+}
+
+class ContactCard extends StatelessWidget {
+  final String name;
+  final String phone;
+  final String imagePath;
+
+  ContactCard({required this.name, required this.phone, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.grey[900],
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage(imagePath),
+              radius: 24,
             ),
-          ),
-          IconButton(
-            icon: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => TransferToOneScreen()),
-              );
-            },
-          ),
-        ],
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: TextStyle(color: Colors.white)),
+                  Text(phone, style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => TransferToOneScreen(name: name, phone: phone, imagePath: imagePath)),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
