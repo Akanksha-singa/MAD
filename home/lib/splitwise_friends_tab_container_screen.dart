@@ -92,7 +92,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
                 child: Text('Add Group'),
                 onPressed: () {
                   Navigator.pop(context);
-                  // Implement add group logic
+                  _showAddGroupDialog(context);
                 },
               ),
             ],
@@ -176,6 +176,66 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
     );
   }
 
+  void _showAddGroupDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final amountController = TextEditingController();
+    final splitByController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add New Group'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: 'Group Name'),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(labelText: 'Description'),
+                ),
+                TextField(
+                  controller: amountController,
+                  decoration: InputDecoration(labelText: 'Total Amount'),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                ),
+                TextField(
+                  controller: splitByController,
+                  decoration: InputDecoration(labelText: 'Split By (number of people)'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text('Add'),
+              onPressed: () {
+                _addGroup(
+                  context,
+                  nameController.text,
+                  descriptionController.text,
+                  amountController.text,
+                  splitByController.text,
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _addFriend(BuildContext context, String name, String phone, String amount, bool youOwe) {
     if (name.isEmpty || phone.isEmpty || amount.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields')));
@@ -195,6 +255,31 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend added successfully')));
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add friend: $error')));
+    });
+  }
+
+  void _addGroup(BuildContext context, String name, String description, String amount, String splitBy) {
+    if (name.isEmpty || amount.isEmpty || splitBy.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all required fields')));
+      return;
+    }
+
+    double totalAmount = double.tryParse(amount) ?? 0.0;
+    int numberOfPeople = int.tryParse(splitBy) ?? 1;
+    double amountPerPerson = totalAmount / numberOfPeople;
+
+    FirebaseFirestore.instance.collection('SplitWiseGroups').add({
+      'name': name,
+      'description': description,
+      'totalAmount': totalAmount,
+      'memberCount': numberOfPeople,
+      'amountPerPerson': amountPerPerson,
+      'imagePath': 'assets/images/default_group.png',
+      'createdAt': FieldValue.serverTimestamp(),
+    }).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Group added successfully')));
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add group: $error')));
     });
   }
 }
