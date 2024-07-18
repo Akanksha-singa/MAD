@@ -15,7 +15,38 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            _buildBalanceCard(),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .limit(1)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Text('No data available');
+                }
+
+                // Safely convert the wallet balance to double
+                double walletBalance = 0.0;
+                var walletData = (snapshot.data!.docs.first.data() as Map<String, dynamic>)['wallet'];
+                if (walletData is int) {
+                  walletBalance = walletData.toDouble();
+                } else if (walletData is double) {
+                  walletBalance = walletData;
+                } else if (walletData is String) {
+                  walletBalance = double.tryParse(walletData) ?? 0.0;
+                }
+
+                return _buildBalanceCard(walletBalance);
+              },
+            ),
             TabBar(
               tabs: [Tab(text: 'FRIENDS'), Tab(text: 'GROUPS')],
             ),
@@ -39,7 +70,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceCard() {
+  Widget _buildBalanceCard(double walletBalance) {
     return Container(
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.all(16),
@@ -63,8 +94,9 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            '₹1000',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+            '₹${walletBalance.toStringAsFixed(2)}',
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
           ),
         ],
       ),
@@ -92,7 +124,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
                 child: Text('Add Group'),
                 onPressed: () {
                   Navigator.pop(context);
-                  // Implement add group logic
+                  // Implement add group logic here
                 },
               ),
             ],
