@@ -49,7 +49,9 @@ class FriendCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double parsedAmount;
     try {
-      parsedAmount = (amount is String) ? double.parse(amount) : (amount as num).toDouble();
+      parsedAmount = (amount is String)
+          ? double.parse(amount)
+          : (amount as num).toDouble();
     } catch (e) {
       parsedAmount = 0.0;
       print('Error parsing amount: $e');
@@ -88,7 +90,10 @@ class FriendCard extends StatelessWidget {
             ),
             Text(
               '₹${parsedAmount.abs().toStringAsFixed(2)}',
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
             ),
             IconButton(
               icon: Icon(Icons.delete, color: Colors.white),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:home/home_screen.dart';
-import 'login_screen.dart'; // Add this import
+import 'login_screen.dart';
+import 'home_screen.dart';
 
 class CreateAccountFourScreen extends StatefulWidget {
   @override
@@ -74,9 +73,6 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
               child: Text('Create a new account'),
             ),
             SizedBox(height: 20),
-            // _buildDivider(),
-            SizedBox(height: 20),
-            // _buildSocialLogin(),
           ],
         ),
       ),
@@ -94,6 +90,8 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
         'name': name,
         'phone_number': phoneNumber,
         'password': password,
+        'balance': 50000.00, // Set default balance
+        'wallet': 50000.00,  // Set default wallet value
         'timestamp': FieldValue.serverTimestamp(),
       }).then((value) {
         print("User data added to Firestore");
@@ -121,7 +119,7 @@ class _CreateAccountFourScreenState extends State<CreateAccountFourScreen> {
                 Navigator.of(context).pop(); // Close dialog
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => HomeScreen()),
-                ); // Navigate back to login screen
+                ); // Navigate to home screen
               },
             ),
           ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'profile_settings_screen.dart';
 import 'settings_screen.dart';
 import 'transfer_screen.dart';
@@ -55,6 +57,34 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  double _walletBalance = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWalletBalance();
+  }
+
+  Future<void> _fetchWalletBalance() async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users')
+          .orderBy('timestamp', descending: true)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+        setState(() {
+          _walletBalance = documentSnapshot['wallet'].toDouble();
+        });
+      }
+    } catch (e) {
+      print("Error fetching wallet balance: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +139,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Text(
-            '₹14,235.34',
+            '₹${_walletBalance.toStringAsFixed(2)}',
             style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          Text('Main balance', style: TextStyle(color: Colors.white, fontSize: 20)),
+          Text('Wallet balance', style: TextStyle(color: Colors.white, fontSize: 20)),
           SizedBox(height: 50),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -58,7 +58,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                   children: [
                     TextSpan(text: 'You have successfully transferred\n'),
                     TextSpan(
-                      text: '\$$amount',
+                      text: '\₹$amount',
                       style: TextStyle(
                         color: Color(0xFFFF4D4D),
                         fontWeight: FontWeight.bold,

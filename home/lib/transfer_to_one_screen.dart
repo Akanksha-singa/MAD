@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'payment_fail_screen.dart';
 import 'payment_success_screen.dart';
 import 'transfer_screen.dart';
@@ -16,6 +17,33 @@ class TransferToOneScreen extends StatefulWidget {
 
 class _TransferToOneScreenState extends State<TransferToOneScreen> {
   String amount = '00.00';
+  String userPhoneNumber = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLatestUserPhoneNumber();
+  }
+
+  Future<void> fetchLatestUserPhoneNumber() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .orderBy('timestamp', descending: true)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        setState(() {
+          userPhoneNumber = querySnapshot.docs.first.id;
+        });
+      } else {
+        print('No users found in the database.');
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
 
   void updateAmount(String value) {
     setState(() {
@@ -27,18 +55,28 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
     });
   }
 
-  void processPayment() {
+  Future<void> processPayment() async {
     double amountValue = double.tryParse(amount) ?? 0.0;
     if (amountValue > 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PaymentSuccessScreen(
-            amount: amount,
-            recipientName: widget.name,
+      bool success = await updateWalletBalance(amountValue);
+      if (success) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentSuccessScreen(
+              amount: amount,
+              recipientName: widget.name,
+            ),
           ),
-        ),
-      ).then((_) => navigateBackToTransferScreen());
+        ).then((_) => navigateBackToTransferScreen());
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentFailScreen(),
+          ),
+        ).then((_) => navigateBackToTransferScreen());
+      }
     } else {
       Navigator.push(
         context,
@@ -46,6 +84,33 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
           builder: (context) => PaymentFailScreen(),
         ),
       ).then((_) => navigateBackToTransferScreen());
+    }
+  }
+
+  Future<bool> updateWalletBalance(double amountToDeduct) async {
+    try {
+      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userPhoneNumber);
+
+      return FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(userDoc);
+
+        if (!snapshot.exists) {
+          throw Exception("User does not exist!");
+        }
+
+        double currentBalance = (snapshot.get('wallet') as num).toDouble();
+        if (currentBalance < amountToDeduct) {
+          throw Exception("Insufficient funds");
+        }
+
+        double newBalance = currentBalance - amountToDeduct;
+        transaction.update(userDoc, {'wallet': newBalance});
+
+        return true;
+      });
+    } catch (e) {
+      print('Error updating wallet balance: $e');
+      return false;
     }
   }
 
