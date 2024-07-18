@@ -15,7 +15,38 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            _buildBalanceCard(),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .limit(1)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return Text('No data available');
+                }
+
+                // Safely convert the wallet balance to double
+                double walletBalance = 0.0;
+                var walletData = (snapshot.data!.docs.first.data() as Map<String, dynamic>)['wallet'];
+                if (walletData is int) {
+                  walletBalance = walletData.toDouble();
+                } else if (walletData is double) {
+                  walletBalance = walletData;
+                } else if (walletData is String) {
+                  walletBalance = double.tryParse(walletData) ?? 0.0;
+                }
+
+                return _buildBalanceCard(walletBalance);
+              },
+            ),
             TabBar(
               tabs: [Tab(text: 'FRIENDS'), Tab(text: 'GROUPS')],
             ),
@@ -39,7 +70,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceCard() {
+  Widget _buildBalanceCard(double walletBalance) {
     return Container(
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.all(16),
@@ -63,8 +94,9 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            '₹1000',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+            '₹${walletBalance.toStringAsFixed(2)}',
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
           ),
         ],
       ),
@@ -92,7 +124,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
                 child: Text('Add Group'),
                 onPressed: () {
                   Navigator.pop(context);
-                  _showAddGroupDialog(context);
+                  // Implement add group logic here
                 },
               ),
             ],
@@ -176,66 +208,6 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
     );
   }
 
-  void _showAddGroupDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final descriptionController = TextEditingController();
-    final amountController = TextEditingController();
-    final splitByController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add New Group'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: 'Group Name'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
-                ),
-                TextField(
-                  controller: amountController,
-                  decoration: InputDecoration(labelText: 'Total Amount'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                ),
-                TextField(
-                  controller: splitByController,
-                  decoration: InputDecoration(labelText: 'Split By (number of people)'),
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text('Add'),
-              onPressed: () {
-                _addGroup(
-                  context,
-                  nameController.text,
-                  descriptionController.text,
-                  amountController.text,
-                  splitByController.text,
-                );
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _addFriend(BuildContext context, String name, String phone, String amount, bool youOwe) {
     if (name.isEmpty || phone.isEmpty || amount.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all fields')));
@@ -255,31 +227,6 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend added successfully')));
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add friend: $error')));
-    });
-  }
-
-  void _addGroup(BuildContext context, String name, String description, String amount, String splitBy) {
-    if (name.isEmpty || amount.isEmpty || splitBy.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all required fields')));
-      return;
-    }
-
-    double totalAmount = double.tryParse(amount) ?? 0.0;
-    int numberOfPeople = int.tryParse(splitBy) ?? 1;
-    double amountPerPerson = totalAmount / numberOfPeople;
-
-    FirebaseFirestore.instance.collection('SplitWiseGroups').add({
-      'name': name,
-      'description': description,
-      'totalAmount': totalAmount,
-      'memberCount': numberOfPeople,
-      'amountPerPerson': amountPerPerson,
-      'imagePath': 'assets/images/default_group.png',
-      'createdAt': FieldValue.serverTimestamp(),
-    }).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Group added successfully')));
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add group: $error')));
     });
   }
 }
