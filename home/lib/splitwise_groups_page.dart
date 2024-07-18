@@ -20,12 +20,12 @@ class SplitwiseGroupsPage extends StatelessWidget {
           children: snapshot.data!.docs.map((doc) {
             Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
             return GroupCard(
-              name: data['name'],
-              totalAmount: data['totalAmount'],
-              imagePath: data['imagePath'],
+              name: data['name'] ?? 'Unnamed Group',
+              totalAmount: (data['totalAmount'] ?? 0).toDouble(),
+              imagePath: data['imagePath'] ?? 'assets/images/default_group.png',
               groupId: doc.id,
-              memberCount: data['memberCount'],
-              amountPerPerson: data['amountPerPerson'],
+              memberCount: data['memberCount'] ?? 0,
+              amountPerPerson: (data['amountPerPerson'] ?? 0).toDouble(),
             );
           }).toList(),
         );
