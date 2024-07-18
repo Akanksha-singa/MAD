@@ -20,10 +20,12 @@ class SplitwiseGroupsPage extends StatelessWidget {
           children: snapshot.data!.docs.map((doc) {
             Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
             return GroupCard(
-              name: data['name'],
-              amount: data['amount'],
-              imagePath: data['imagePath'],
+              name: data['name'] ?? 'Unnamed Group',
+              totalAmount: (data['totalAmount'] ?? 0).toDouble(),
+              imagePath: data['imagePath'] ?? 'assets/images/default_group.png',
               groupId: doc.id,
+              memberCount: data['memberCount'] ?? 0,
+              amountPerPerson: (data['amountPerPerson'] ?? 0).toDouble(),
             );
           }).toList(),
         );
@@ -34,27 +36,23 @@ class SplitwiseGroupsPage extends StatelessWidget {
 
 class GroupCard extends StatelessWidget {
   final String name;
-  final dynamic amount;
+  final double totalAmount;
   final String imagePath;
   final String groupId;
+  final int memberCount;
+  final double amountPerPerson;
 
   GroupCard({
     required this.name,
-    required this.amount,
+    required this.totalAmount,
     required this.imagePath,
     required this.groupId,
+    required this.memberCount,
+    required this.amountPerPerson,
   });
 
   @override
   Widget build(BuildContext context) {
-    double parsedAmount;
-    try {
-      parsedAmount = (amount is String) ? double.parse(amount) : (amount as num).toDouble();
-    } catch (e) {
-      parsedAmount = 0.0;
-      print('Error parsing amount: $e');
-    }
-
     return GestureDetector(
       onDoubleTap: () => _showDeleteConfirmation(context),
       child: Container(
@@ -64,35 +62,45 @@ class GroupCard extends StatelessWidget {
           color: Color(0xFF76A5E7),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundImage: AssetImage(imagePath),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundImage: AssetImage(imagePath),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Members: $memberCount',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.white),
+                  onPressed: () => _showDeleteConfirmation(context),
+                ),
+              ],
             ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  Text(
-                    parsedAmount < 0 ? 'You owe the group' : 'Group owes you',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ],
-              ),
+            SizedBox(height: 8),
+            Text(
+              'Total Amount: ₹${totalAmount.toStringAsFixed(2)}',
+              style: TextStyle(color: Colors.white, fontSize: 14),
             ),
             Text(
-              '₹${parsedAmount.abs().toStringAsFixed(2)}',
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            IconButton(
-              icon: Icon(Icons.delete, color: Colors.white),
-              onPressed: () => _showDeleteConfirmation(context),
+              'Amount per person: ₹${amountPerPerson.toStringAsFixed(2)}',
+              style: TextStyle(color: Colors.white, fontSize: 14),
             ),
           ],
         ),
