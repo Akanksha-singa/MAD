@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'home_screen.dart'; // Import your home screen
 
 class PaymentSuccessScreen extends StatelessWidget {
   final String amount;
@@ -74,31 +73,6 @@ class PaymentSuccessScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-              ),
-              Spacer(),
-              Padding(
-                padding: EdgeInsets.only(bottom: 32.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                            (Route<dynamic> route) => false,
-                      );
-                    },
-                    child: Text('Back to wallet'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFF4D4D),
-                      textStyle: TextStyle(color: Colors.white),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],

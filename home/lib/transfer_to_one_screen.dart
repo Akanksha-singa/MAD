@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'payment_fail_screen.dart';
 import 'payment_success_screen.dart';
+import 'transfer_screen.dart';
 
 class TransferToOneScreen extends StatefulWidget {
   final String name;
@@ -37,17 +38,26 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
             recipientName: widget.name,
           ),
         ),
-      );
+      ).then((_) => navigateBackToTransferScreen());
     } else {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PaymentFailScreen(),
         ),
-      );
+      ).then((_) => navigateBackToTransferScreen());
     }
   }
 
+  void navigateBackToTransferScreen() {
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => TransferScreen()),
+            (route) => false,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,9 +127,7 @@ class _TransferToOneScreenState extends State<TransferToOneScreen> {
                     backgroundColor: Color(0xFFFF4D4D),
                     minimumSize: Size(double.infinity, 50),
                   ),
-                  onPressed: () {
-                    // Implement transfer logic here
-                  },
+                  onPressed: processPayment,
                 ),
                 SizedBox(height: 20),
               ],

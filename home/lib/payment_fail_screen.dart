@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'home_screen.dart'; // Import your home screen
 
 class PaymentFailScreen extends StatelessWidget {
   const PaymentFailScreen({Key? key}) : super(key: key);
@@ -36,30 +35,6 @@ class PaymentFailScreen extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14,
-                ),
-              ),
-              Spacer(),
-              Padding(
-                padding: EdgeInsets.only(bottom: 32.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                            (Route<dynamic> route) => false,
-                      );
-                    },
-                    child: Text('Back to wallet'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFFF4D4D),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],
