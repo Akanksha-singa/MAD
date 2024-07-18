@@ -44,7 +44,7 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
                   walletBalance = double.tryParse(walletData) ?? 0.0;
                 }
 
-                return _buildBalanceCard(walletBalance);
+                return _buildHeading(); // Replacing the balance card with a heading
               },
             ),
             TabBar(
@@ -70,35 +70,12 @@ class SplitwiseFriendsTabContainerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBalanceCard(double walletBalance) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      margin: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Total Balance',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text(
-            '₹${walletBalance.toStringAsFixed(2)}',
-            style: TextStyle(
-                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
-          ),
-        ],
+  Widget _buildHeading() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Text(
+        'Splitwise',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     );
   }
