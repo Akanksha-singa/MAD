@@ -4,17 +4,19 @@ class RemaindersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        backgroundColor: Color(0xFFFF4D4D),
+        title: Row(
           children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person, color: Color(0xFFFF4D4D)),
+            ),
+            SizedBox(width: 10),
             Text(
               'Remainders',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'REX',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -39,7 +41,7 @@ class RemaindersScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: Icon(Icons.add),
+        child: Icon(Icons.notifications),
         backgroundColor: Color(0xFFFF4D4D),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -47,33 +49,39 @@ class RemaindersScreen extends StatelessWidget {
         color: Color(0xFFFF4D4D),
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(Icons.home, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.person, color: Colors.white),
-              onPressed: () {},
-            ),
-          ],
+        child: Container(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.white),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(Icons.person, color: Colors.white),
+                onPressed: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildRemainderCard(String title, String dueDate, int amount, IconData icon) {
-    return Card(
-      color: Color(0xFFE77676),
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFFF4D4D),
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Row(
           children: [
             CircleAvatar(
-              backgroundColor: Color(0xFFE70202),
-              child: Icon(icon, color: Colors.white),
+              backgroundColor: Colors.white,
+              child: Icon(icon, color: Color(0xFFFF4D4D)),
             ),
             SizedBox(width: 16),
             Expanded(

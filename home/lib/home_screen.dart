@@ -165,9 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(builder: (context) => TransferScreen()),
                 );
               }),
-              _buildTransferAvatar(context, 'A', 'Ajay N M'),
-              _buildTransferAvatar(context, 'A', 'Akanksha S'),
-              _buildTransferAvatar(context, 'A', 'Aneesh KP'),
+              _buildTransferAvatar(context, 'assets/images/ajayuu.png', 'Ajay N M'),
+              _buildTransferAvatar(context, 'assets/images/akanksha.png', 'Akanksha S'),
+              _buildTransferAvatar(context, 'assets/images/aneesh.png', 'Aneesh KP'),
             ],
           ),
         ],
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTransferAvatar(BuildContext context, String label, String name, [VoidCallback? onTap]) {
+  Widget _buildTransferAvatar(BuildContext context, String imageAddress, String name, [VoidCallback? onTap]) {
     return Padding(
       padding: EdgeInsets.only(right: 16),
       child: GestureDetector(
@@ -183,8 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             CircleAvatar(
-              backgroundColor: label == '+' ? Colors.red[200] : Colors.orange,
-              child: Text(label, style: TextStyle(color: Colors.white)),
+              backgroundImage: imageAddress == '+' ? null : AssetImage(imageAddress),
+              backgroundColor: imageAddress == '+' ? Colors.red[200] : null,
+              child: imageAddress == '+' ? Text('+', style: TextStyle(color: Colors.white)) : null,
             ),
             SizedBox(height: 5),
             Text(name, style: TextStyle(color: Colors.white, fontSize: 12)),
