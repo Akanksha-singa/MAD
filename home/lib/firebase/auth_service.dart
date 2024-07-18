@@ -47,4 +47,7 @@ class AuthService {
   //   await FacebookAuth.instance.logOut();
   //   await _auth.signOut();
   // }
+
+
+
 }
